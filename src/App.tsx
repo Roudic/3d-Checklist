@@ -1,77 +1,115 @@
+import { useMemo, useState } from 'react'
 import { Atmosphere } from './components/Atmosphere'
-import { ChecklistRail } from './components/ChecklistRail'
-import { MetricStrip } from './components/MetricStrip'
-import { TaskBoard } from './components/TaskBoard'
-import { useChecklists } from './hooks/useChecklists'
+import { AppShell } from './components/AppShell'
+import { AssignmentsView } from './components/AssignmentsView'
+import { AuditRunner } from './components/AuditRunner'
+import { Dashboard } from './components/Dashboard'
+import { FollowUpsView } from './components/FollowUpsView'
+import { LoginScreen } from './components/LoginScreen'
+import { TemplateBuilder } from './components/TemplateBuilder'
+import { useAuth } from './hooks/useAuth'
+import { useKitchenStore } from './hooks/useKitchenStore'
+import type { AppView } from './types'
 import './App.css'
 
 export default function App() {
-  const {
-    checklists,
-    active,
-    activeId,
-    setActiveId,
-    filter,
-    setFilter,
-    filteredTasks,
-    metrics,
-    addChecklist,
-    renameChecklist,
-    deleteChecklist,
-    addTask,
-    toggleTask,
-    deleteTask,
-    setPriority,
-  } = useChecklists()
+  const { authed, error, login, logout } = useAuth()
+  const store = useKitchenStore()
+  const [view, setView] = useState<AppView>('dashboard')
+  const [runId, setRunId] = useState<string | null>(null)
+
+  const running = useMemo(() => {
+    if (!runId) return null
+    const audit = store.assignments.find((a) => a.id === runId)
+    if (!audit) return null
+    const template = store.templates.find((t) => t.id === audit.templateId)
+    const kitchen = store.kitchens.find((k) => k.id === audit.kitchenId)
+    if (!template || !kitchen) return null
+    return { audit, template, kitchen }
+  }, [runId, store.assignments, store.templates, store.kitchens])
+
+  if (!authed) {
+    return (
+      <div className="app app--login">
+        <Atmosphere />
+        <LoginScreen error={error} onLogin={login} />
+      </div>
+    )
+  }
+
+  function openRun(id: string) {
+    setRunId(id)
+    setView('run')
+  }
 
   return (
-    <div className="app">
+    <>
       <Atmosphere />
-
-      <header className="masthead">
-        <div className="masthead__brand">
-          <div className="brand-mark" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="brand-copy">
-            <p className="brand-name">RIG</p>
-            <p className="brand-tag">Task &amp; Checklist Systems</p>
-          </div>
-        </div>
-        <p className="masthead__line">
-          Glass metric control for production passes — track nodes, clear heat, ship the frame.
-        </p>
-      </header>
-
-      <MetricStrip metrics={metrics} filter={filter} onFilter={setFilter} />
-
-      <main className="stage">
-        <ChecklistRail
-          checklists={checklists}
-          activeId={activeId}
-          onSelect={setActiveId}
-          onAdd={addChecklist}
-          onDelete={deleteChecklist}
-          onRename={renameChecklist}
-        />
-        {active && (
-          <TaskBoard
-            listName={active.name}
-            tasks={filteredTasks}
-            onAdd={addTask}
-            onToggle={toggleTask}
-            onDelete={deleteTask}
-            onPriority={setPriority}
+      <AppShell
+        view={view}
+        onView={(v) => {
+          setView(v)
+          if (v !== 'run') setRunId(null)
+        }}
+        onLogout={logout}
+      >
+        {view === 'dashboard' && (
+          <Dashboard
+            metrics={store.metrics}
+            kitchenStats={store.kitchenStats}
+            followUps={store.followUps}
+            onOpenFollows={() => setView('followups')}
+            onOpenAssignments={() => setView('assignments')}
           />
         )}
-      </main>
-
-      <footer className="foot">
-        <span>RIG // LOCAL PERSISTENCE</span>
-        <span>VIEWPORT STABLE</span>
-      </footer>
-    </div>
+        {view === 'assignments' && (
+          <AssignmentsView
+            assignments={store.assignments}
+            templates={store.templates}
+            kitchens={store.kitchens}
+            onCreate={store.createAssignment}
+            onRun={openRun}
+          />
+        )}
+        {view === 'followups' && (
+          <FollowUpsView
+            followUps={store.followUps}
+            kitchens={store.kitchens}
+            assignments={store.assignments}
+            onStatus={store.setFollowStatus}
+            onAdd={store.addFollowUp}
+          />
+        )}
+        {view === 'templates' && (
+          <TemplateBuilder
+            templates={store.templates}
+            onAddTemplate={store.addTemplate}
+            onUpdateMeta={store.updateTemplateMeta}
+            onDeleteTemplate={store.deleteTemplate}
+            onAddQuestion={store.addQuestion}
+            onUpdateQuestion={store.updateQuestion}
+            onRemoveQuestion={store.removeQuestion}
+            onChangeType={store.changeQuestionType}
+          />
+        )}
+        {view === 'run' && running && (
+          <AuditRunner
+            audit={running.audit}
+            template={running.template}
+            kitchen={running.kitchen}
+            onSave={(answers) => store.saveAnswers(running.audit.id, answers)}
+            onSubmit={(answers) => {
+              store.submitAudit(running.audit.id, answers)
+              setView('followups')
+              setRunId(null)
+            }}
+            onBack={() => {
+              setView('assignments')
+              setRunId(null)
+            }}
+          />
+        )}
+      </AppShell>
+    </>
   )
 }
