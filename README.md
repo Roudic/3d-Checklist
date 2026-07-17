@@ -2,16 +2,9 @@
 
 A glassy metric checklist app with Unreal Engine viewport vibes.
 
-**Live (after Pages is enabled):** https://roudic.github.io/3d-Checklist/
+**Live:** https://roudic.github.io/3d-Checklist/
 
-## Deploy (GitHub Pages)
-
-The site is built and ready. Enable hosting once:
-
-1. Open **[Settings → Pages](https://github.com/Roudic/3d-Checklist/settings/pages)**
-2. Under **Build and deployment → Source**, choose either:
-   - **GitHub Actions** (preferred — then re-run the failed *Deploy to GitHub Pages* workflow), or
-   - **Deploy from a branch** → `gh-pages` / `/` (static build already pushed)
+Pushes to `main` auto-deploy via GitHub Actions.
 
 ## Features
 
