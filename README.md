@@ -2,6 +2,8 @@
 
 A glassy metric checklist app with Unreal Engine viewport vibes.
 
+**Live:** https://roudic.github.io/3d-Checklist/
+
 ## Features
 
 - Multiple checklists with rename / delete
