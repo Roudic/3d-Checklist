@@ -1,18 +1,21 @@
-# RIG — Task & Checklist Systems
+# RIG — Kitchen Audit Systems
 
-A glassy metric checklist app with Unreal Engine viewport vibes.
+Glassy metric kitchen audit app (Unreal-style viewport UI) for assignments, follow-ups, and template building.
 
 **Live:** https://roudic.github.io/3d-Checklist/
 
-Pushes to `main` auto-deploy via GitHub Actions.
+## Login
+
+- User: `admin`
+- Passcode: `1234`
 
 ## Features
 
-- Multiple checklists with rename / delete
-- Tasks with priority (low / mid / high) and complete toggle
-- Glass metric strip: completion %, open load, priority heat, viewport filters
+- Tracking dashboard (assignments, scores, follow-up heat, kitchen pulse)
+- Easy follow-ups with status chips
+- Assignments dispatch + audit runner
+- Template builder with switchable question types (Yes/No, Pass/Fail/N/A, Score, Temp, Checkbox, Text)
 - Local persistence via `localStorage`
-- Perspective grid atmosphere and subtle motion
 
 ## Develop
 
@@ -21,9 +24,4 @@ npm install
 npm run dev
 ```
 
-## Build
-
-```bash
-npm run build
-npm run preview
-```
+Pushes to `main` auto-deploy via GitHub Actions.
