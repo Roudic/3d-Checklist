@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --bg-0: #070b10;
+  --bg-1: #0c1219;
+  --bg-2: #121a24;
+  --ink: #e8f0f7;
+  --ink-dim: #8aa0b5;
+  --ink-mute: #5a7188;
+  --cyan: #3dfff0;
+  --cyan-soft: #1ec8d4;
+  --cyan-dim: rgba(61, 255, 240, 0.14);
+  --amber: #ffb347;
+  --amber-dim: rgba(255, 179, 71, 0.16);
+  --rose: #ff6b7a;
+  --rose-dim: rgba(255, 107, 122, 0.14);
+  --glass: rgba(16, 26, 38, 0.55);
+  --glass-edge: rgba(180, 220, 255, 0.14);
+  --glass-shine: rgba(255, 255, 255, 0.06);
+  --grid: rgba(90, 140, 180, 0.12);
+  --font-display: 'Orbitron', sans-serif;
+  --font-ui: 'Rajdhani', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 4px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  color-scheme: dark;
+  font-family: var(--font-ui);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-0);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
